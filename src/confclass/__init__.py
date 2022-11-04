@@ -1,22 +1,16 @@
-from dataclasses import is_dataclass
 import enum
 
 from .processor import ClassProcessor
 
-import inspect
-class ConfigurationType(enum.Enum):
-    ...
+from inspect import isclass
 
-def confclass(cls: object | None = None, /):    
+
+def confclass(cls: object | None = None, /):
     # When confclass is called without "()" (@confclass), an error should appear
-    # In that case, cls is filled in
-    if cls is not None:
-        raise ValueError('Decorator can only be used with parameters')
-    
-    def wrap(cls):
-        if not inspect.isclass(cls):
-            raise ValueError('Decorator can only be used on a class')
-        
-        return ClassProcessor().process(cls)
+    # In that case, cls is filled in. Also, funcs aren't allowed
+    if cls is None:
+        raise ValueError("Decorator can only be used with parameters")
+    if not isclass(cls):
+        raise ValueError("Decorator can only be used on a class")
 
-    return wrap
+    return lambda cls: ClassProcessor(cls).process(cls)
