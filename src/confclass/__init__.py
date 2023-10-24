@@ -1,11 +1,10 @@
-import enum
-
+from inspect import isclass
 from .processor import ClassProcessor
 
-from inspect import isclass
+import dataclasses
 
 
-def confclass(cls: object | None = None, /):
+def confclass(cls: object | None = None):
     # When confclass is called without "()" (@confclass), an error should appear
     # In that case, cls is filled in. Also, funcs aren't allowed
     if cls is None:
@@ -13,4 +12,7 @@ def confclass(cls: object | None = None, /):
     if not isclass(cls):
         raise ValueError("Decorator can only be used on a class")
 
-    return lambda cls: ClassProcessor(cls).process(cls)
+    def wrap(cls):
+        return ClassProcessor().process(cls)
+
+    return wrap
