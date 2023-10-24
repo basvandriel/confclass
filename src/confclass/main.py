@@ -15,14 +15,12 @@ def confclass(obj: object):
     return t
 
 def is_confclass(obj: object) -> bool:
-    return hasattr(obj, 'CONFCLASS_NAME')
+    return hasattr(obj, 'CONFCLASS_NAME') and isinstance(confclass, Configuration)
 
 
 def get_configuration(confclass: object) -> Configuration | None:
-    if is_confclass(confclass) or isinstance(confclass, Configuration):
-        return confclass
-    
-    return None
+    return confclass if is_confclass(confclass) else None
+
 
 
 
