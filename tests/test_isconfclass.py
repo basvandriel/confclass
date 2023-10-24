@@ -1,10 +1,5 @@
 from confclass.main import Configuration, confclass, is_confclass, get_configuration
 
-
-
-
-
-
 def test_class_annotation():
     @confclass
     class T:
@@ -27,5 +22,4 @@ def test_inheritence():
         haha: str
     
     conf: Configuration = get_configuration(T())
-
     assert isinstance(conf, Configuration)

@@ -19,10 +19,10 @@ def is_confclass(obj: object) -> bool:
 
 
 def get_configuration(confclass: object) -> Configuration | None:
-    if not is_confclass(confclass) or not isinstance(confclass, Configuration):
-        return None
+    if is_confclass(confclass) or isinstance(confclass, Configuration):
+        return confclass
     
-    return confclass
+    return None
 
 
 
