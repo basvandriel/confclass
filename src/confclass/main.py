@@ -31,14 +31,13 @@ class ObjectFiller[T: object]:
             raise Exception(f'Type mismatch for {key} attribute')
         
     def __keep_default(self: Self, obj: object, key: str):
-        defaultval = getattr(obj, key)
-        setattr(obj, key, defaultval)
+        _ = getattr(obj, key)
     
     def __process_data(self: Self, obj: object, key: str, value: Any):    
         self.__validate_keyval(key, value)
         
         if not self.__overwrite_defaults:
-            try:    
+            try:
                 self.__keep_default(obj, key)
                 return
             except:
