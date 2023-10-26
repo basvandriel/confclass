@@ -61,11 +61,12 @@ file_extension_mapper = {
     '.json': JSONWriter()
 }
 
-
-
-
-
 def parse_config[T: object](filepath: Path, type: type[T]) -> T | None: 
+    from os import path
+    
+    if not path.exists(filepath):
+        raise FileNotFoundError
+    
     if not is_confclass(type):
         raise Exception(f"'{type.__name__}' should be a confclass instance") # type: ignore
     

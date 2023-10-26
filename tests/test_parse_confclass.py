@@ -18,13 +18,9 @@ def test_parse_confclass_no_decorator(testdir: Path):
     assert str(e.value) == "'TestingPayload' should be a confclass instance"
 
 
-def test_parse_isfile(testdir: Path):
-    @confclass
-    class TestingPayload:
-        name: str
-        age: int
-        
+def test_parse_filenotfound(testdir: Path):
+    with raises(Exception) as e:
+        parse_config(testdir / "test_notfound.json", Person)
+
+    assert e.typename == 'FileNotFoundError'
     
-    # TestingPayload.pa/
-    x: TestingPayload | None = parse_config(testdir / "test.json", TestingPayload)
-    print(x)
