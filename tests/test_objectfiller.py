@@ -21,11 +21,9 @@ def test_parse_json():
 
 def test_parse_json_defaultvalue_inclass():
     class DefaultedUser:
-        user: str = 'Bas'
+        name: str = 'Bas'
     
-    json = {
-        'user': 'NEE',
-    } 
-    result: DefaultedUser = ObjectFiller(DefaultedUser, False).fill(json)    
+    result: DefaultedUser = ObjectFiller(DefaultedUser, False).fill({'name': 'NEE' })    
 
-    print(result)
+    assert result is not None
+    assert result.name == 'Bas'
