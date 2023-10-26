@@ -1,4 +1,6 @@
+from pathlib import Path
 from typing import Any, Self
+import json
 
 
 class Configuration:
@@ -6,12 +8,9 @@ class Configuration:
         print('hi')
     
 def confclass(obj: object):
-    obj.CONFCLASS_NAME = 'confclass'
+    setattr(obj, 'CONFCLASS_NAME', 'confclass')
     
-    # T = obj.__class__
-    # class K(Configuration, T):
-    #     ...
-    t: Configuration =  type(obj.__name__, (Configuration, obj), {})
+    t: Configuration =  type(obj.__name__, (Configuration, obj), {}) # type: ignore
     return t
 
 def is_confclass(obj: object) -> bool:
@@ -19,17 +18,20 @@ def is_confclass(obj: object) -> bool:
 
 
 def get_configuration(confclass: object) -> Configuration | None:
-    return confclass if is_confclass(confclass) else None
+    if is_confclass(confclass) and isinstance(confclass, Configuration):
+        return confclass
+    
+    return None
 
 
 class ObjectFiller[T: object]:
-    __obj: T
+    __class: type[T]
     
-    def __init__(self: Self, obj: T) -> None:
-        self.__obj = obj   
+    def __init__(self: Self, type: type[T]) -> None:
+        self.__class = type   
         
     def __validate_keyval(self: Self, key: str, value: Any):
-        attrs = self.__obj.__annotations__
+        attrs = self.__class.__annotations__
         
         if key not in attrs:
             raise Exception('Attribute not found in class')
@@ -37,12 +39,32 @@ class ObjectFiller[T: object]:
         if type(value) != attrs[key]:
             raise Exception(f'Type mismatch for {key} attribute')
     
-    def __process_data(self: Self, key, value):
+    def __process_data(self: Self, obj: object, key: str, value: Any):
         self.__validate_keyval(key, value)
-        setattr(self.__obj, key, value)
+        setattr(obj, key, value)
             
     def fill(self: Self, data: dict[str, Any]) -> T:
+        obj = self.__class()
+        type[T]
         [
-            self.__process_data(k,v) for k, v in data.items()
+            self.__process_data(obj, k, v) for k, v in data.items()
         ]
-        return self.__obj
+        
+        return obj
+    
+    
+
+class JSONConfigReader:
+    def read_into[T](self: Self, jsonpath: Path, type: type[T]) -> T: 
+        with open(jsonpath) as jsonfile:
+            parsed_json = json.load(jsonfile)
+            return ObjectFiller(type).fill(parsed_json)
+        
+
+
+def parse_config[T: object]() -> None | T: # type: ignore
+    # Required!!
+    if not is_confclass(T):
+        ...
+    
+    return None
