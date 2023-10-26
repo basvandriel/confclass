@@ -1,6 +1,6 @@
 from pathlib import Path
-# import dataclasses
-from confclass.main import JSONWriter
+
+from confclass.configwriter import JSONWriter
 
 class TestingPayload:
     name: str

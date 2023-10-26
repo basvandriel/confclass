@@ -1,4 +1,7 @@
-from confclass.main import ObjectFiller
+
+
+
+from confclass.object_filler import ObjectFiller
 
 
 class TestingPayload:

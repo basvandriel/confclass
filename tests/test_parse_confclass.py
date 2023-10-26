@@ -1,7 +1,8 @@
 from pathlib import Path
 from confclass import confclass
-from confclass.main import parse_config
 from pytest import raises
+
+from confclass.decorators import parse_config
 
 @confclass
 class Person:
