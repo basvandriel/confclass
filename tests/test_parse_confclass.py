@@ -24,7 +24,7 @@ def test_parse_isfile(testdir: Path):
         name: str
         age: int
         
-        
+    
     # TestingPayload.pa/
     x: TestingPayload | None = parse_config(testdir / "test.json", TestingPayload)
     print(x)

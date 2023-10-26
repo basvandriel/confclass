@@ -41,9 +41,15 @@ class ObjectFiller[T: object]:
         
         return obj
     
+import abc
+
+class ConfigWriter(abc.ABC):
+    @abc.abstractmethod
+    def read_into[T](self: Self, jsonpath: Path, type: type[T]) -> T:
+        ...
     
 
-class JSONConfigReader:
+class JSONWriter(ConfigWriter):
     def read_into[T](self: Self, jsonpath: Path, type: type[T]) -> T: 
         with open(jsonpath) as jsonfile:
             parsed_json = json.load(jsonfile)
@@ -51,13 +57,22 @@ class JSONConfigReader:
     
     
     
+file_extension_mapper = {
+    '.json': JSONWriter()
+}
 
 
 
-def parse_config[T: object](jsonpath: Path, type: type[T]) -> T | None: 
+
+
+def parse_config[T: object](filepath: Path, type: type[T]) -> T | None: 
     if not is_confclass(type):
         raise Exception(f"'{type.__name__}' should be a confclass instance") # type: ignore
     
-    r = JSONConfigReader().read_into(jsonpath, type)
+    # Find the correct writer
+    writer: ConfigWriter | None = file_extension_mapper.get(filepath.suffix)
     
-    return r
+    if writer is None:
+        raise Exception(f"No writer found for the '{filepath.suffix}' format")
+    
+    return writer.read_into(filepath, type)

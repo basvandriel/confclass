@@ -1,6 +1,6 @@
 from pathlib import Path
 # import dataclasses
-from confclass.main import JSONConfigReader
+from confclass.main import JSONWriter
 
 class TestingPayload:
     name: str
@@ -8,6 +8,6 @@ class TestingPayload:
     
 def test_jsonparse(testdir: Path):
     filepath = testdir / 'test.json'
-    result: TestingPayload = JSONConfigReader().read_into(filepath, TestingPayload)
+    result: TestingPayload = JSONWriter().read_into(filepath, TestingPayload)
 
     assert 1 == 1
