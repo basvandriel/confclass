@@ -7,22 +7,11 @@ class Configuration:
     def hi(self):
         print('hi')
     
-def confclass(obj: object):
-    setattr(obj, 'CONFCLASS_NAME', 'confclass')
+
     
-    t: Configuration =  type(obj.__name__, (Configuration, obj), {}) # type: ignore
-    return t
 
 def is_confclass(obj: object) -> bool:
-    return hasattr(obj, 'CONFCLASS_NAME') and isinstance(confclass, Configuration)
-
-
-def get_configuration(confclass: object) -> Configuration | None:
-    if is_confclass(confclass) and isinstance(confclass, Configuration):
-        return confclass
-    
-    return None
-
+    return hasattr(obj, '__IS_CONCLASS__')
 
 class ObjectFiller[T: object]:
     __class: type[T]
@@ -59,12 +48,16 @@ class JSONConfigReader:
         with open(jsonpath) as jsonfile:
             parsed_json = json.load(jsonfile)
             return ObjectFiller(type).fill(parsed_json)
-        
-
-
-def parse_config[T: object]() -> None | T: # type: ignore
-    # Required!!
-    if not is_confclass(T):
-        ...
     
-    return None
+    
+    
+
+
+
+def parse_config[T: object](jsonpath: Path, type: type[T]) -> T | None: 
+    if not is_confclass(type):
+        raise Exception(f"'{type.__name__}' should be a confclass instance") # type: ignore
+    
+    r = JSONConfigReader().read_into(jsonpath, type)
+    
+    return r

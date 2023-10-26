@@ -1,6 +1,3 @@
-from inspect import isclass
-
-
 # def confclass(cls: object | None = None):
 #     # When confclass is called without "()" (@confclass), an error should appear
 #     # In that case, cls is filled in. Also, funcs aren't allowed
@@ -13,3 +10,11 @@ from inspect import isclass
 #         return ClassProcessor().process(cls)
 
 #     return wrap
+
+
+def confclass[T: object](cls: T) -> T:
+    def wrap(cls: T): 
+        setattr(cls, '__IS_CONCLASS__', True) 
+        return cls
+
+    return wrap(cls)
