@@ -32,8 +32,12 @@ class ObjectFiller[T: object]:
         obj = self.__class.__annotations__[annotation_key]()
 
         for k,v in attributes.items():
-            setattr(obj, k, v)
+            should_recurse = type(v) == dict
+            if should_recurse:
+                v = self.__process_inner(v, k) # type: ignore
             
+            setattr(obj, k, v)
+        
         return obj
     
     def __process_data(self: Self, obj: object, key: str, value: Any):    

@@ -1,16 +1,18 @@
 from confclass.object_filler import ObjectFiller
 
 
-class Adress:
-    street: str
-    city: str
 
-class User:
-    name: str
-    age: int
-    address: Adress
     
-def test_testing():
+def test_1level_basic_nest():
+    class Adress:
+        street: str
+        city: str
+
+    class User:
+        name: str
+        age: int
+        address: Adress
+        
     json = {
         'name': 'Bas',
         'age': 22,
@@ -19,7 +21,36 @@ def test_testing():
             'city': 'street'
         }
     }
+    x = ObjectFiller(User).fill(json)    
+    assert x.address != None
+    assert x.address.city == 'street'
     
+    
+def test_2level_nest():
+    class Postal:
+        numbers: str
+        suffix: str
+    
+    class Adress:
+        street: str
+        city: str
+        postal: Postal        
+
+    class User:
+        name: str
+        age: int
+        address: Adress
+        
+    json = {
+        'address': {
+            'street': 'city',
+            'city': 'street',
+            'postal': {
+                'numbers': '1245',
+                'suffix': 'AB'
+            }
+        }
+    }
     x = ObjectFiller(User).fill(json)    
     assert x.address != None
     assert x.address.city == 'street'
