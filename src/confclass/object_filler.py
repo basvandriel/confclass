@@ -1,4 +1,5 @@
 
+from inspect import isclass
 from typing import Any, Self
 
 
@@ -16,11 +17,24 @@ class ObjectFiller[T: object]:
         if key not in attrs:
             raise Exception('Attribute not found in class')
                 
-        if type(value) != attrs[key]:
+        
+        isinner: bool = isclass(attrs[key])
+        
+        # A dict should be a class instance
+        if (type(value) != attrs[key]) and not isinner:
             raise Exception(f'Type mismatch for {key} attribute')
         
     def __keep_default(self: Self, obj: object, key: str):
         _ = getattr(obj, key)
+        
+    def __process_inner(self: Self, attributes: dict[str, Any], annotation_key: str):
+        """Annotation key"""
+        obj = self.__class.__annotations__[annotation_key]()
+
+        for k,v in attributes.items():
+            setattr(obj, k, v)
+            
+        return obj
     
     def __process_data(self: Self, obj: object, key: str, value: Any):    
         self.__validate_keyval(key, value)
@@ -31,8 +45,15 @@ class ObjectFiller[T: object]:
                 return
             except:
                 ...
+                
+        if type(value) == dict:
+            inner_obj = self.__process_inner(value, key) # type: ignore
             
+            # So we don't have to call setattr multiple times, and it should be an object
+            value = inner_obj
+
         setattr(obj, key, value)
+            
 
             
     def fill(self: Self, data: dict[str, Any]) -> T:
@@ -42,3 +63,5 @@ class ObjectFiller[T: object]:
             self.__process_data(obj, k, v)
             
         return obj
+    
+    
