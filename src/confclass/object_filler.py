@@ -27,14 +27,15 @@ class ObjectFiller[T: object]:
     def __keep_default(self: Self, obj: object, key: str):
         _ = getattr(obj, key)
         
-    def __process_inner(self: Self, attributes: dict[str, Any], annotation_key: str):
+    def __process_inner(self: Self, attributes: dict[str, Any], t: type):
         """Annotation key"""
-        obj = self.__class.__annotations__[annotation_key]()
+        obj = t()
 
         for k,v in attributes.items():
             should_recurse = type(v) == dict
             if should_recurse:
-                v = self.__process_inner(v, k) # type: ignore
+                # k = self.__class.__annotations__[key]
+                v = self.__process_inner(v, t.__annotations__[k]) # type: ignore
             
             setattr(obj, k, v)
         
@@ -51,7 +52,7 @@ class ObjectFiller[T: object]:
                 ...
                 
         if type(value) == dict:
-            inner_obj = self.__process_inner(value, key) # type: ignore
+            inner_obj = self.__process_inner(value, self.__class.__annotations__[key]) # type: ignore
             
             # So we don't have to call setattr multiple times, and it should be an object
             value = inner_obj
