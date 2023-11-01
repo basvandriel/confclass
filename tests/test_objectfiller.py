@@ -33,6 +33,18 @@ def test_parse_json_defaultvalue_inclass():
     assert result is not None
     assert result.name == 'Bas'
     
+def test_parse_json_default_value_nested():
+    class Address:
+        street: str = "street"
+    
+    class User:
+        address: Address
+    
+    result: User = ObjectFiller(User, False).fill({'address': {'street': 'nooo'} })    
+
+    assert result.address.street == 'street'
+    
+    
 def test_require_all_annotations_one_miss():
     json = {
         'user': 'Bas',

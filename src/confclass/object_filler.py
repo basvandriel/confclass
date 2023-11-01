@@ -32,8 +32,15 @@ class ObjectFiller[T: object]:
         obj = t()
 
         for k,v in attributes.items():       
-            self.__validate_class_annotations(k, v, t.__annotations__)            
-            
+            self.__validate_class_annotations(k, v, t.__annotations__)       
+             
+            if not self.__overwrite_defaults:
+                try:
+                    getattr(obj, k) # It will throw when it can't be found
+                    continue
+                except:
+                    ...
+                    
             if self.__should_recurse(v):
                 cls = t.__annotations__[k]
                 v = self.__process_inner(v, cls) # type: ignore
