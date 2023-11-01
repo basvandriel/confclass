@@ -73,6 +73,6 @@ def test_inner_validation_missing_class_annotation():
     }
     
     with raises(Exception) as e:
-        x = ObjectFiller(User).fill(json)    
+        ObjectFiller(User).fill(json)    
     
-    assert str(e.value) == 'Attribute not found in class'
+    assert str(e.value) == "Attribute 'postal' not found in class"

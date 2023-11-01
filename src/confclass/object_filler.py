@@ -15,7 +15,7 @@ class ObjectFiller[T: object]:
         
     def __validate_keyval(self: Self, key: str, value: Any, class_annotations: dict[str, Any]):        
         if key not in class_annotations:
-            raise Exception('Attribute not found in class')
+            raise Exception(f"Attribute '{key}' not found in class")
                  
         isinner: bool = isclass(class_annotations[key])
         
