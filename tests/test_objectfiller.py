@@ -1,6 +1,7 @@
 
 
 
+from typing import Any
 from pytest import raises
 from confclass.object_filler import ObjectFiller
 
@@ -51,3 +52,24 @@ def test_require_all_annotations_multi_miss():
         
     assert str(e.value) == "Missing input attributes: age, message"
     
+def test_require_all_annotations_multi_inner_miss():
+    class Foo:
+        bar: str
+        baz: str
+        
+    class TestingInput(TestingPayload):
+        user: str
+        age: int
+        message: str
+        foo: Foo
+    
+    data: dict[str, Any] = {
+        'user': 'Bas',
+        'age': 23,
+        'message': 'Hi there',
+        'foo': {}
+    }
+    with raises(Exception) as e: 
+        ObjectFiller(TestingInput).fill(data)   
+        
+    assert str(e.value) == 'Missing input attributes: bar, baz'

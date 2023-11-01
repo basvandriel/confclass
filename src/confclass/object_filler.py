@@ -28,6 +28,9 @@ class ObjectFiller[T: object]:
         
     def __process_inner(self: Self, attributes: dict[str, Any], t: type):
         """Annotation key""" 
+        self.__validate_input_attributes(
+            t.__annotations__, attributes
+        )
         obj = t()
 
         for k,v in attributes.items():       
@@ -78,6 +81,8 @@ class ObjectFiller[T: object]:
         self.__validate_input_attributes(
             self.__class.__annotations__, data
         )
+        
+        # TODO this doesn't work with inheritance
         obj = self.__class()
 
         for k,v in data.items():
