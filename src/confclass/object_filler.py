@@ -41,7 +41,12 @@ class ObjectFiller[T: object]:
         
         return obj
     
-    def __process_data(self: Self, obj: object, key: str, value: Any):    
+    def __process_data(self: Self, obj: object, key: str, value: Any):  
+        # TODO it should also fail when it's missing properties.
+        # Currently, only functions when it has the attribute in the dict,
+        # but not in the class annotations. Should be bi-directional.  
+        # 
+        # Maybe make a difference between the validated attributes? 😄
         self.__validate_keyval(key, value, self.__class.__annotations__)
         
         if not self.__overwrite_defaults:
@@ -59,7 +64,6 @@ class ObjectFiller[T: object]:
 
         setattr(obj, key, value)
             
-
             
     def fill(self: Self, data: dict[str, Any]) -> T:
         obj = self.__class()
