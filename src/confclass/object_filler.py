@@ -29,7 +29,7 @@ class ObjectFiller[T: object]:
     def __process_inner(self: Self, attributes: dict[str, Any], t: type):
         """Annotation key""" 
         self.__validate_input_attributes(
-            t.__annotations__, attributes
+            attributes, t
         )
         obj = t()
 
@@ -67,19 +67,22 @@ class ObjectFiller[T: object]:
 
         setattr(obj, key, value)
 
-    def __validate_input_attributes(self: Self, expected_class_annotations: dict[str, Any], data: dict[str, Any]):
-        expected: list[str] = list(expected_class_annotations.keys())
+    def __validate_input_attributes(
+        self: Self, data: dict[str, Any], matching_class: type[Any]
+    ):
+        classname: str = matching_class.__name__
+        expected: list[str] = list(matching_class.__annotations__.keys())
         
         diff = [x for x in expected if x not in set(data.keys())]
         
         if len(diff) != 0:
             x = ', '.join(diff)
-            raise Exception(f'Missing input attributes: {x}')
+            raise Exception(f'Missing input attributes for {classname}: {x}')
 
             
     def fill(self: Self, data: dict[str, Any]) -> T:
         self.__validate_input_attributes(
-            self.__class.__annotations__, data
+            data, self.__class
         )
         
         # TODO this doesn't work with inheritance

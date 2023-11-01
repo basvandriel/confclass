@@ -41,7 +41,7 @@ def test_require_all_annotations_one_miss():
     with raises(Exception) as e: 
         ObjectFiller(TestingPayload).fill(json)   
         
-    assert str(e.value) == "Missing input attributes: message"
+    assert str(e.value) == "Missing input attributes for TestingPayload: message"
 
 def test_require_all_annotations_multi_miss():
     json = {
@@ -50,7 +50,7 @@ def test_require_all_annotations_multi_miss():
     with raises(Exception) as e: 
         ObjectFiller(TestingPayload).fill(json)   
         
-    assert str(e.value) == "Missing input attributes: age, message"
+    assert str(e.value) == "Missing input attributes for TestingPayload: age, message"
     
 def test_require_all_annotations_multi_inner_miss():
     class Foo:
@@ -72,4 +72,4 @@ def test_require_all_annotations_multi_inner_miss():
     with raises(Exception) as e: 
         ObjectFiller(TestingInput).fill(data)   
         
-    assert str(e.value) == 'Missing input attributes: bar, baz'
+    assert str(e.value) == 'Missing input attributes for Foo: bar, baz'
