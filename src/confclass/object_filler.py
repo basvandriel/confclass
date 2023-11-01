@@ -23,9 +23,7 @@ class ObjectFiller[T: object]:
         if (type(value) != class_annotations[key]) and not isinner:
             raise Exception(f'Type mismatch for {key} attribute')
         
-    def __keep_default(self: Self, obj: object, key: str):
-        _ = getattr(obj, key)
-        
+
     def __process_inner(self: Self, attributes: dict[str, Any], t: type):
         """Annotation key""" 
         self.__validate_input_attributes(
@@ -45,16 +43,11 @@ class ObjectFiller[T: object]:
         return obj
     
     def __process_data(self: Self, obj: object, key: str, value: Any):  
-        # TODO it should also fail when it's missing properties.
-        # Currently, only functions when it has the attribute in the dict,
-        # but not in the class annotations. Should be bi-directional.  
-        # 
-        # Maybe make a difference between the validated attributes? 😄
         self.__validate_class_annotations(key, value, self.__class.__annotations__)
         
         if not self.__overwrite_defaults:
             try:
-                self.__keep_default(obj, key)
+                getattr(obj, key) # It will throw when it can't be found
                 return
             except:
                 ...
@@ -76,20 +69,18 @@ class ObjectFiller[T: object]:
         diff = [x for x in expected if x not in set(data.keys())]
         
         if len(diff) != 0:
-            x = ', '.join(diff)
-            raise Exception(f'Missing input attributes for {classname}: {x}')
+            msg = f"Missing input attributes for {classname}: {', '.join(diff)}"
+            raise Exception(msg)
 
             
     def fill(self: Self, data: dict[str, Any]) -> T:
+        # TODO this doesn't work with inheritance
         self.__validate_input_attributes(
             data, self.__class
         )
         
-        # TODO this doesn't work with inheritance
         obj = self.__class()
-
-        for k,v in data.items():
-            self.__process_data(obj, k, v)
+        [self.__process_data(obj, k, v) for k, v in data.items()]
             
         return obj
     
