@@ -13,7 +13,7 @@ class ObjectFiller[T: object]:
     def __should_recurse(self: Self, v: Any) -> bool:
         return type(v) == dict
         
-    def __validate_keyval(self: Self, key: str, value: Any, class_annotations: dict[str, Any]):        
+    def __validate_class_annotations(self: Self, key: str, value: Any, class_annotations: dict[str, Any]):        
         if key not in class_annotations:
             raise Exception(f"Attribute '{key}' not found in class")
                  
@@ -31,7 +31,7 @@ class ObjectFiller[T: object]:
         obj = t()
 
         for k,v in attributes.items():       
-            self.__validate_keyval(k, v, t.__annotations__)            
+            self.__validate_class_annotations(k, v, t.__annotations__)            
             
             if self.__should_recurse(v):
                 cls = t.__annotations__[k]
@@ -47,7 +47,7 @@ class ObjectFiller[T: object]:
         # but not in the class annotations. Should be bi-directional.  
         # 
         # Maybe make a difference between the validated attributes? 😄
-        self.__validate_keyval(key, value, self.__class.__annotations__)
+        self.__validate_class_annotations(key, value, self.__class.__annotations__)
         
         if not self.__overwrite_defaults:
             try:
@@ -63,9 +63,21 @@ class ObjectFiller[T: object]:
             value = inner_obj
 
         setattr(obj, key, value)
-            
+
+    def __validate_input_attributes(self: Self, expected_class_annotations: dict[str, Any], data: dict[str, Any]):
+        expected: list[str] = list(expected_class_annotations.keys())
+        
+        diff = [x for x in expected if x not in set(data.keys())]
+        
+        if len(diff) != 0:
+            x = ', '.join(diff)
+            raise Exception(f'Missing input attributes: {x}')
+
             
     def fill(self: Self, data: dict[str, Any]) -> T:
+        self.__validate_input_attributes(
+            self.__class.__annotations__, data
+        )
         obj = self.__class()
 
         for k,v in data.items():
