@@ -60,10 +60,7 @@ class ObjectFiller[T: object]:
                 ...
                 
         if self.__should_recurse(value):
-            inner_obj = self.__process_inner(value, self.__class.__annotations__[key]) # type: ignore
-            
-            # So we don't have to call setattr multiple times, and it should be an object
-            value = inner_obj
+            value = self.__process_inner(value, self.__class.__annotations__[key]) # type: ignore
 
         setattr(obj, key, value)
 
