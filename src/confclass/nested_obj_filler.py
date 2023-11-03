@@ -15,22 +15,13 @@ class ComplexObjectFiller[T: object](ObjectFiller[T]):
         
     
     @override
-    def _resolve_obj(self: Self, cls: type, data: dict[str, Any]) -> T:
-        obj = cls()
-        for k,v in data.items():
-            self._validate_class_annotations(Row(obj, k, v), cls.__annotations__)
-
-            if not self._overwrite_defaults and hasattr(obj, k):
-                continue
-            
-            if self._is_nested_object(v):
-                innercls: type = cls.__annotations__[k]
-                
-                self._validate_input_attributes(
-                    v, innercls
-                )
-                v = self._resolve_obj(innercls, v)
-            
-            setattr(obj, k, v)
-
-        return obj
+    def _resolve_value(self: Self, row: Row[T]) -> Any:
+        if not self._is_nested_object(row.value):
+            return row.value
+    
+        innercls: type = row.type.__annotations__[row.key]
+        
+        self._validate_input_attributes(
+            row.value, innercls
+        )
+        return self._resolve_obj(innercls, row.value)

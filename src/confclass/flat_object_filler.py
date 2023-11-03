@@ -4,7 +4,7 @@ from typing import Any, Self
         
 @dataclass
 class Row[RT: object]:
-    obj: RT
+    type: type[RT]
     key: str
     value: Any
 
@@ -24,10 +24,10 @@ class ObjectFiller[T: object]:
     ):
         classname: str = matching_class.__name__
         expected: list[str] = list(matching_class.__annotations__.keys())
-        
+
         diff = [x for x in expected if x not in set(data.keys())]
-        
-        if len(diff) != 0:
+
+        if diff:
             msg = f"Missing input attributes for {classname}: {', '.join(diff)}"
             raise Exception(msg)
 
@@ -42,15 +42,22 @@ class ObjectFiller[T: object]:
             raise Exception(f'Type mismatch for {row.key} attribute')
         
 
-    def _resolve_obj(self: Self, cls: type[T], data: dict[str, Any]) -> T:
+    def _resolve_value(self: Self, row: Row[T]) -> Any:
+        return row.value
+
+    def _resolve_obj(self: Self, cls: type, data: dict[str, Any]) -> T:
         obj = cls()
         for k,v in data.items():
-            self._validate_class_annotations(Row(obj, k, v), cls.__annotations__)
+            row = Row(
+                cls, k, v
+            )
+            self._validate_class_annotations(row, cls.__annotations__)
 
             if not self._overwrite_defaults and hasattr(obj, k):
                 continue
-                
-            setattr(obj, k, v)
+                        
+            setattr(obj, k, self._resolve_value(row))
+            
         return obj
 
     def fill(self: Self, data: dict[str, Any]) -> T:
