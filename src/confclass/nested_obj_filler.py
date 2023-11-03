@@ -13,18 +13,15 @@ class ComplexObjectFiller[T: object](ObjectFiller[T]):
         if (type(row.value) != class_annotations[row.key]) and not isinner:
             raise Exception(f'Type mismatch for {row.key} attribute')
         
+    
     @override
     def _resolve_obj(self: Self, cls: type, data: dict[str, Any]) -> T:
         obj = cls()
         for k,v in data.items():
             self._validate_class_annotations(Row(obj, k, v), cls.__annotations__)
 
-            if not self._overwrite_defaults:
-                try:
-                    z = getattr(obj, k)  # It will throw when it can't be found
-                    continue
-                except:
-                    ...
+            if not self._overwrite_defaults and hasattr(obj, k):
+                continue
             
             if self._is_nested_object(v):
                 innercls: type = cls.__annotations__[k]

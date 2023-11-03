@@ -41,19 +41,14 @@ class ObjectFiller[T: object]:
         if (type(row.value) != class_annotations[row.key]):
             raise Exception(f'Type mismatch for {row.key} attribute')
         
-        
+
     def _resolve_obj(self: Self, cls: type[T], data: dict[str, Any]) -> T:
         obj = cls()
         for k,v in data.items():
             self._validate_class_annotations(Row(obj, k, v), cls.__annotations__)
 
-            
-            if not self._overwrite_defaults:
-                try:
-                    getattr(obj, k, v)  
-                    continue # It will throw when it can't be found
-                except:
-                    ...
+            if not self._overwrite_defaults and hasattr(obj, k):
+                continue
                 
             setattr(obj, k, v)
         return obj
