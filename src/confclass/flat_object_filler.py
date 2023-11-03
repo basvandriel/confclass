@@ -42,10 +42,10 @@ class ObjectFiller[T: object]:
             raise Exception(f'Type mismatch for {row.key} attribute')
         
         
-    def _resolve_obj(self: Self, cls: type[T], data: dict[str, Any], class_annotations: dict[str,Any]) -> T:
+    def _resolve_obj(self: Self, cls: type[T], data: dict[str, Any]) -> T:
         obj = cls()
         for k,v in data.items():
-            self._validate_class_annotations(Row(obj, k, v), class_annotations)
+            self._validate_class_annotations(Row(obj, k, v), cls.__annotations__)
 
             
             if not self._overwrite_defaults:
@@ -62,4 +62,4 @@ class ObjectFiller[T: object]:
         self._validate_input_attributes(
             data, self._class
         )
-        return self._resolve_obj(self._class, data, self._class.__annotations__)
+        return self._resolve_obj(self._class, data)
