@@ -1,5 +1,7 @@
 from pytest import fixture
-from confclass.constants import ROOTDIR
+from pathlib import Path
+
+ROOTDIR: Path = Path(__file__).parent.parent
 
 @fixture
 def testdir():

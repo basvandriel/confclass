@@ -1,12 +1,5 @@
-from dataclasses import dataclass
 from typing import Any, Self
-
-        
-@dataclass
-class Row[RT: object]:
-    type: type[RT]
-    key: str
-    value: Any
+from confclass.row import Row
 
 class ObjectFiller[T: object]:
     _class: type[T]
