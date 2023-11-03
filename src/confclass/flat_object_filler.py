@@ -1,18 +1,25 @@
+from dataclasses import dataclass
 from typing import Any, Self
 
+        
+@dataclass
+class Row[RT: object]:
+    obj: RT
+    key: str
+    value: Any
 
 class ObjectFiller[T: object]:
-    __class: type[T]
-    __overwrite_defaults: bool
+    _class: type[T]
+    _overwrite_defaults: bool
     
     def __init__(self: Self, type: type[T], overwrite_defaults: bool = True) -> None:
-        self.__class = type   
-        self.__overwrite_defaults = overwrite_defaults
+        self._class = type   
+        self._overwrite_defaults = overwrite_defaults
         
-    def __is_nested_object(self: Self, v: Any) -> bool:
+    def _is_nested_object(self: Self, v: Any) -> bool:
         return type(v) == dict
      
-    def __validate_input_attributes(
+    def _validate_input_attributes(
         self: Self, data: dict[str, Any], matching_class: type[Any]
     ):
         classname: str = matching_class.__name__
@@ -24,40 +31,35 @@ class ObjectFiller[T: object]:
             msg = f"Missing input attributes for {classname}: {', '.join(diff)}"
             raise Exception(msg)
 
-    def __validate_class_annotations(self: Self, key: str, value: Any, class_annotations: dict[str, Any]):
-        if self.__is_nested_object(value):
+    def _validate_class_annotations(self: Self, row: Row[T], class_annotations: dict[str, Any]):
+        if self._is_nested_object(row.value):
             raise Exception('Only flat structures are supported')
         
-        if key not in class_annotations:
-            raise Exception(f"Attribute '{key}' not found in class")
+        if row.key not in class_annotations:
+            raise Exception(f"Attribute '{row.key}' not found in class")
                         
-        if (type(value) != class_annotations[key]):
-            raise Exception(f'Type mismatch for {key} attribute')
+        if (type(row.value) != class_annotations[row.key]):
+            raise Exception(f'Type mismatch for {row.key} attribute')
         
-    def __validate_row(self: Self, obj: object, key: str, value: Any) -> None:  
-        self.__validate_class_annotations(key, value, self.__class.__annotations__)
         
-        if not self.__overwrite_defaults:
-            try:
-                getattr(obj, key) # It will throw when it can't be found
-            except:
-                raise
-        
-    def __resolve_obj(self: Self, type: type[T], data: dict[str, Any]) -> T:
-        obj = self.__class()
+    def _resolve_obj(self: Self, cls: type[T], data: dict[str, Any], class_annotations: dict[str,Any]) -> T:
+        obj = cls()
         for k,v in data.items():
-            try:
-                self.__validate_row(
-                    obj, k, v
-                )
-                setattr(obj, k, v)
-            except:
-                continue
-        
+            self._validate_class_annotations(Row(obj, k, v), class_annotations)
+
+            
+            if not self._overwrite_defaults:
+                try:
+                    getattr(obj, k, v)  
+                    continue # It will throw when it can't be found
+                except:
+                    ...
+                
+            setattr(obj, k, v)
         return obj
 
     def fill(self: Self, data: dict[str, Any]) -> T:
-        self.__validate_input_attributes(
-            data, self.__class
+        self._validate_input_attributes(
+            data, self._class
         )
-        return self.__resolve_obj(self.__class, data)
+        return self._resolve_obj(self._class, data, self._class.__annotations__)

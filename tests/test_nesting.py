@@ -1,6 +1,5 @@
 from pytest import raises
-from confclass.object_filler import ObjectFiller
-
+from confclass.nested_obj_filler import ComplexObjectFiller
     
 def test_1level_basic_nest():
     class Adress:
@@ -20,7 +19,7 @@ def test_1level_basic_nest():
             'city': 'street'
         }
     }
-    x = ObjectFiller(User).fill(json)    
+    x = ComplexObjectFiller(User).fill(json)    
     assert x.address != None
     assert x.address.city == 'street'
     
@@ -48,7 +47,7 @@ def test_2level_nest():
             }
         }
     }
-    x = ObjectFiller(User).fill(json)    
+    x = ComplexObjectFiller(User).fill(json)    
     assert x.address != None
     assert x.address.city == 'street'
     
@@ -73,6 +72,6 @@ def test_inner_validation_missing_class_annotation():
     }
     
     with raises(Exception) as e:
-        ObjectFiller(User).fill(json)    
+        ComplexObjectFiller(User).fill(json)    
     
     assert str(e.value) == "Attribute 'postal' not found in class"

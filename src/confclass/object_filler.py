@@ -3,12 +3,12 @@ from inspect import isclass
 from typing import Any, Self
 
 class ObjectFiller[T: object]:
-    __class: type[T]
-    __overwrite_defaults: bool
+    _class: type[T]
+    _overwrite_defaults: bool
     
     def __init__(self: Self, type: type[T], overwrite_defaults: bool = True) -> None:
-        self.__class = type   
-        self.__overwrite_defaults = overwrite_defaults
+        self._class = type   
+        self._overwrite_defaults = overwrite_defaults
      
     def __should_recurse(self: Self, v: Any) -> bool:
         return type(v) == dict
@@ -34,7 +34,7 @@ class ObjectFiller[T: object]:
         for k,v in attributes.items():       
             self.__validate_class_annotations(k, v, t.__annotations__)       
              
-            if not self.__overwrite_defaults:
+            if not self._overwrite_defaults:
                 try:
                     getattr(obj, k) # It will throw when it can't be found
                     continue
@@ -50,9 +50,9 @@ class ObjectFiller[T: object]:
         return obj
     
     def __process_data(self: Self, obj: object, key: str, value: Any):  
-        self.__validate_class_annotations(key, value, self.__class.__annotations__)
+        self.__validate_class_annotations(key, value, self._class.__annotations__)
         
-        if not self.__overwrite_defaults:
+        if not self._overwrite_defaults:
             try:
                 getattr(obj, key) # It will throw when it can't be found
                 return
@@ -60,7 +60,7 @@ class ObjectFiller[T: object]:
                 ...
                 
         if self.__should_recurse(value):
-            value = self.__process_inner(value, self.__class.__annotations__[key]) # type: ignore
+            value = self.__process_inner(value, self._class.__annotations__[key]) # type: ignore
 
         setattr(obj, key, value)
 
@@ -80,10 +80,9 @@ class ObjectFiller[T: object]:
     def fill(self: Self, data: dict[str, Any]) -> T:
         # TODO this doesn't work with inheritance
         self.__validate_input_attributes(
-            data, self.__class
+            data, self._class
         )
-        
-        obj = self.__class()
+        obj = self._class()
         [self.__process_data(obj, k, v) for k, v in data.items()]
             
         return obj
