@@ -4,7 +4,7 @@ import json
 from pathlib import Path
 from typing import Self
 
-from confclass.object_filler import ObjectFiller
+from confclass.nested_obj_filler import ComplexObjectFiller
 
 class ConfigWriter(abc.ABC):
     @abc.abstractmethod
@@ -16,4 +16,4 @@ class JSONWriter(ConfigWriter):
     def read_into[T](self: Self, jsonpath: Path, type: type[T]) -> T: 
         with open(jsonpath) as jsonfile:
             parsed_json = json.load(jsonfile)
-            return ObjectFiller(type).fill(parsed_json)
+            return ComplexObjectFiller(type).fill(parsed_json)
