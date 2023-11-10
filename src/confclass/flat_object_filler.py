@@ -37,15 +37,14 @@ class ObjectFiller[T: object]:
 
     def _resolve_value(self: Self, row: Row[T]) -> Any:
         return row.value
-
+    
     def _resolve_obj(self: Self, cls: type, data: dict[str, Any]) -> T:
         obj = cls()
+        
         for k,v in data.items():
-            row = Row(
-                cls, k, v
+            self._validate_class_annotations(
+                (row := Row(cls, k, v)), cls.__annotations__
             )
-            self._validate_class_annotations(row, cls.__annotations__)
-
             if not self._overwrite_defaults and hasattr(obj, k):
                 continue
                         
