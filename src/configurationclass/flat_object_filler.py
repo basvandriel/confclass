@@ -12,6 +12,10 @@ class ObjectFiller[T: object]:
         
     def _is_nested_object(self: Self, v: Any) -> bool:
         return type(v) == dict
+    
+    def _should_set_attr(self: Self, cls: type, k: str):
+        return self._overwrite_defaults or not hasattr(cls, k)
+    
      
     def _validate_input_attributes(
         self: Self, data: dict[str, Any], matching_class: type[Any]
@@ -53,7 +57,7 @@ class ObjectFiller[T: object]:
             self._validate_class_annotations(
                 (row := Row(cls, k, v)), cls.__annotations__
             )
-            if not self._overwrite_defaults and hasattr(obj, k):
+            if self._should_set_attr(cls, k):
                 continue
                         
             setattr(obj, k, self._resolve_value(row))
