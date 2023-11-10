@@ -3,7 +3,7 @@
 
 from typing import Any
 from pytest import raises
-from confclass.nested_obj_filler import ComplexObjectFiller, ObjectFiller
+from configurationclass.nested_obj_filler import ComplexObjectFiller, ObjectFiller
 # from confclass.object_filler import ObjectFiller
 
 

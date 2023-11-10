@@ -1,5 +1,5 @@
 from typing import Any, Self
-from confclass.flat_object_filler import ObjectFiller, Row
+from configurationclass.flat_object_filler import ObjectFiller, Row
 
 
 class ComplexObjectFiller[T: object](ObjectFiller[T]):   

@@ -1,4 +1,4 @@
-from confclass.flat_object_filler import ObjectFiller
+from configurationclass.flat_object_filler import ObjectFiller
 
 
 def test_flatfiller():

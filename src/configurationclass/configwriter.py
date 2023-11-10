@@ -4,7 +4,7 @@ import json
 from pathlib import Path
 from typing import Self
 
-from confclass.nested_obj_filler import ComplexObjectFiller
+from configurationclass.nested_obj_filler import ComplexObjectFiller
 
 class ConfigWriter(abc.ABC):
     @abc.abstractmethod

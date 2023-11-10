@@ -1,7 +1,7 @@
 from pathlib import Path
-from confclass.configwriter import ConfigWriter, JSONWriter
+from configurationclass.configwriter import ConfigWriter, JSONWriter
 
-from confclass.main import is_confclass
+from configurationclass.main import is_confclass
 
 file_extension_mapper = {
     '.json': JSONWriter()

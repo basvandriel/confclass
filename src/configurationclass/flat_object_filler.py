@@ -1,6 +1,6 @@
 from inspect import isclass
 from typing import Any, Self
-from confclass.row import Row
+from configurationclass.row import Row
 
 class ObjectFiller[T: object]:
     _class: type[T]
