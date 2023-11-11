@@ -3,7 +3,7 @@
 
 from typing import Any
 from pytest import raises
-from configurationclass.nested_obj_filler import ComplexObjectFiller, ObjectFiller
+from configurationclass.nested_obj_filler import ObjectFiller
 # from confclass.object_filler import ObjectFiller
 
 
@@ -41,7 +41,7 @@ def test_parse_json_default_value_nested():
     class User:
         address: Address
     
-    result: User = ComplexObjectFiller(User, False).fill({'address': {'street': 'nooo'} })    
+    result: User = ObjectFiller(User, False).fill({'address': {'street': 'nooo'} })    
 
     assert result.address.street == 'street'
     
@@ -83,6 +83,6 @@ def test_require_all_annotations_multi_inner_miss():
         'foo': {}
     }
     with raises(Exception) as e: 
-        ComplexObjectFiller(TestingInput).fill(data)   
+        ObjectFiller(TestingInput).fill(data)   
         
     assert str(e.value) == 'Missing input attributes for Foo: bar, baz'

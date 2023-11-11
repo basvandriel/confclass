@@ -15,7 +15,6 @@ class ObjectFiller[T: object]:
     
     def _should_set_attr(self: Self, cls: type, k: str):
         return self._overwrite_defaults or not hasattr(cls, k)
-    
      
     def _validate_input_attributes(
         self: Self, data: dict[str, Any], matching_class: type[Any]
@@ -40,15 +39,16 @@ class ObjectFiller[T: object]:
         
 
     def _resolve_value(self: Self, row: Row[T]) -> Any:
-        if not self._is_nested_object(row.value):
+        if type(row.value) != dict:
             return row.value
-    
+
         innercls: type = row.type.__annotations__[row.key]
-        
+        data: dict[str, Any] = row.value
+
         self._validate_input_attributes(
-            row.value, innercls
+            data, innercls
         )
-        return self._resolve_obj(innercls, row.value)
+        return self._resolve_obj(innercls, data)
     
     def _resolve_obj(self: Self, cls: type, data: dict[str, Any]) -> T:
         obj = cls()
@@ -57,7 +57,7 @@ class ObjectFiller[T: object]:
             self._validate_class_annotations(
                 (row := Row(cls, k, v)), cls.__annotations__
             )
-            if self._should_set_attr(cls, k):
+            if not self._should_set_attr(cls, k):
                 continue
                         
             setattr(obj, k, self._resolve_value(row))
