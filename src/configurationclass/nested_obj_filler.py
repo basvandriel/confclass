@@ -11,7 +11,7 @@ class DataclassFiller[DT: object](ObjectFiller[DT]):
         
         for k,v in data.items():
             self._validate_class_annotations(
-                (row := Row(cls, k, v)), cls.__annotations__
+                (row := Row(cls, k, v))
             )
             if not self._should_set_attr(cls, k):
                 continue

@@ -10,9 +10,6 @@ class ObjectFiller[T: object]:
         self._class = type   
         self._overwrite_defaults = overwrite_defaults
         
-    def _is_nested_object(self: Self, v: Any) -> bool:
-        return type(v) == dict
-    
     def _should_set_attr(self: Self, cls: type, k: str):
         return self._overwrite_defaults or not hasattr(cls, k)
      
@@ -28,13 +25,13 @@ class ObjectFiller[T: object]:
             msg = f"Missing input attributes for {classname}: {', '.join(diff)}"
             raise Exception(msg)
 
-    def _validate_class_annotations(self: Self, row: Row[T], class_annotations: dict[str, Any]):        
-        if row.key not in class_annotations:
+    def _validate_class_annotations(self: Self, row: Row[T]):        
+        if row.key not in row.type.__annotations__:
             raise Exception(f"Attribute '{row.key}' not found in class")
         
-        isinner: bool = isclass(class_annotations[row.key])
+        isinner: bool = isclass(row.type.__annotations__[row.key])
 
-        if (type(row.value) != class_annotations[row.key]) and not isinner:
+        if (type(row.value) != row.type.__annotations__[row.key]) and not isinner:
             raise Exception(f'Type mismatch for {row.key} attribute')
         
 
@@ -55,7 +52,7 @@ class ObjectFiller[T: object]:
         
         for k,v in data.items():
             self._validate_class_annotations(
-                (row := Row(cls, k, v)), cls.__annotations__
+                (row := Row(cls, k, v))
             )
             if not self._should_set_attr(cls, k):
                 continue
