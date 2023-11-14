@@ -19,7 +19,9 @@ jobs:
       - name: Install requirements
         run:
           pip install -e . 
-          pip install pytest
-
+          pip install -r requirements-dev.txt
       - name: Test
         run: pytest
+
+      - name: TypeCheck
+        run: mypy . 
