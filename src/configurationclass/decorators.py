@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from pathlib import Path
 from typing import Type, TypeVar
 from configurationclass.configwriter import ConfigWriter, JSONWriter
