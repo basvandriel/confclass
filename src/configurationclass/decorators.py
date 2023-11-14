@@ -1,5 +1,5 @@
 from pathlib import Path
-from typing import TypeVar
+from typing import Type, TypeVar
 from configurationclass.configwriter import ConfigWriter, JSONWriter
 
 from configurationclass.main import is_confclass
@@ -10,7 +10,7 @@ file_extension_mapper = {
 
 T = TypeVar('T', bound=object)
 
-def parse_config(filepath: Path, type: type[T]) -> T | None:
+def parse_config(filepath: Path, type: Type[T]) -> T | None:
     from os import path
     
     if not path.exists(filepath):
