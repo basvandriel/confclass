@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from inspect import isclass
 from typing import Any, Generic, Self, TypeVar
 from configurationclass.row import Row
