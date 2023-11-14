@@ -1,17 +1,21 @@
-from typing import Any, Self
-from configurationclass.flat_object_filler import ObjectFiller, Row
+from typing import Any, Self, TypeVar
+
+from configurationclass.flat_object_filler import ObjectFiller
+from configurationclass.row import Row
+# from configurationclass.flat_object_filler import ObjectFiller, Row
 
 
-class ComplexObjectFiller[T: object](ObjectFiller[T]):   
-    ...
+T = TypeVar('T', bound=object)
+
     
-class DataclassFiller[DT: object](ObjectFiller[DT]):
-    def _resolve_obj(self: Self, cls: type, data: dict[str, Any]) -> DT:
+class DataclassFiller(ObjectFiller[T]):
+    def _resolve_obj(self: Self, cls: type[T], data: dict[str, Any]) -> T:
         attrs = {}
         
         for k,v in data.items():
+            row = Row[T](cls, k, v)
             self._validate_class_annotations(
-                (row := Row(cls, k, v))
+               row
             )
             if not self._should_set_attr(cls, k):
                 continue
