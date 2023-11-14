@@ -1,4 +1,5 @@
 from pathlib import Path
+from typing import TypeVar
 from configurationclass.configwriter import ConfigWriter, JSONWriter
 
 from configurationclass.main import is_confclass
@@ -6,14 +7,17 @@ from configurationclass.main import is_confclass
 file_extension_mapper = {
     '.json': JSONWriter()
 }
-def parse_config[T: object](filepath: Path, type: type[T]) -> T | None: 
+
+T = TypeVar('T', bound=object)
+
+def parse_config(filepath: Path, type: type[T]) -> T | None:
     from os import path
     
     if not path.exists(filepath):
         raise FileNotFoundError
     
     if not is_confclass(type):
-        raise Exception(f"'{type.__name__}' should be a confclass instance") # type: ignore
+        raise Exception(f"'{type.__name__}' should be a confclass instance") 
     
     # Find the correct writer
     writer: ConfigWriter | None = file_extension_mapper.get(filepath.suffix)
