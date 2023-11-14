@@ -1,4 +1,6 @@
-from typing import Any, Self, TypeVar
+from __future__ import annotations
+
+from typing import Any, Type, TypeVar
 
 from configurationclass.flat_object_filler import ObjectFiller
 from configurationclass.row import Row
@@ -9,7 +11,7 @@ T = TypeVar('T', bound=object)
 
     
 class DataclassFiller(ObjectFiller[T]):
-    def _resolve_obj(self: Self, cls: type[T], data: dict[str, Any]) -> T:
+    def _resolve_obj(self, cls: Type[T], data: dict[str, Any]) -> T:
         attrs = {}
         
         for k,v in data.items():
