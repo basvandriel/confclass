@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from configurationclass import parse_dataclass
+from configurationclass import parse_dataclass, load_dict_in_dataclass
 from pathlib import Path
 
 def test_notnone(testdir: Path):
@@ -11,6 +11,20 @@ def test_notnone(testdir: Path):
     filepath = testdir / 'test.json'
 
     result = parse_dataclass(filepath, User)
+    
+    assert result is not None
+    assert result.age == 29
+    
+def test_loaddict(testdir: Path):
+    @dataclass
+    class User:
+        name: str
+        age: int
+        
+    result = load_dict_in_dataclass({
+        'name': 'bas',
+        'age': 29
+    }, User)
     
     assert result is not None
     assert result.age == 29

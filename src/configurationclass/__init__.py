@@ -1,10 +1,14 @@
+from __future__ import annotations
+
 from dataclasses import is_dataclass
 from inspect import isclass
 from pathlib import Path
-from typing import Type, TypeVar
+from typing import Any, Type, TypeVar
 from configurationclass.configwriter import JSONConfigParser
 
 from configurationclass.nested_obj_filler import DataclassFiller
+from os import path
+
 
 T = TypeVar('T', bound=object)
 
@@ -21,16 +25,20 @@ def confclass(cls: T) -> T:
     return wrap(cls) # type: ignore
 
 
+
+# name idea: dataclass_from_dict
+# name idea: dict_to_dataclass
+def load_dict_in_dataclass(data: dict[str, Any], type: Type[T]) -> T | None:
+    if not is_dataclass(type):
+        raise SyntaxError(f"'{type.__name__}' should be a dataclass instance")
+    return DataclassFiller(type).fill(data) # type: ignore[return-value]
+ 
+
 def parse_dataclass(filepath: Path, type: Type[T]) -> T | None:
-    from os import path
-    
     if not path.exists(filepath):
         raise FileNotFoundError
     
-    if not is_dataclass(type):
-        raise Exception(f"'{type.__name__}' should be a dataclass instance") 
-    
     # only JSON support currently
     attrs = JSONConfigParser().read(filepath)
-
-    return DataclassFiller(type).fill(attrs) # type: ignore
+    
+    return load_dict_in_dataclass(attrs, type)
