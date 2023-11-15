@@ -27,7 +27,6 @@ def confclass(cls: T) -> T:
     return wrap(cls) # type: ignore
 
 
-
 # name idea: dataclass_from_dict
 # name idea: dict_to_dataclass
 def load_dict_in_dataclass(data: dict[str, Any], type: Type[T]) -> T | None:
@@ -48,3 +47,12 @@ def parse_dataclass(filepath: Path, type: Type[T]) -> T | None:
     attrs = JSONConfigParser().read(filepath)
     
     return load_dict_in_dataclass(attrs, type)
+
+def parse_config(filepath: Path, type: Type[T]) -> T | None:
+    if not path.exists(filepath):
+        raise FileNotFoundError
+    
+    # only JSON support currently
+    attrs = JSONConfigParser().read(filepath)
+    
+    return load_dict_in_confclass(attrs, type)
