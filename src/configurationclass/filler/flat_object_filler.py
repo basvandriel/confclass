@@ -27,16 +27,16 @@ class ObjectFiller(Generic[T]):
 
         if diff:
             msg = f"Missing input attributes for {classname}: {', '.join(diff)}"
-            raise Exception(msg)
+            raise AttributeError(msg)
 
     def _validate_class_annotations(self, row: Row[T]) -> None:        
         if row.key not in row.type.__annotations__:
-            raise Exception(f"Attribute '{row.key}' not found in class")
+            raise AttributeError(f"Attribute '{row.key}' not found in class")
         
         isinner: bool = isclass(row.type.__annotations__[row.key])
 
-        if (type(row.value) != row.type.__annotations__[row.key]) and not isinner:
-            raise Exception(f'Type mismatch for {row.key} attribute')
+        if (type(row.value) != row.valuetype) and not isinner:
+            raise TypeError(f'Type mismatch for {row.key} attribute')
         
 
     def _resolve_value(self, row: Row[T]) -> Any:

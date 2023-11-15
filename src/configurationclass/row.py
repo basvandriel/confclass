@@ -12,6 +12,6 @@ class Row(Generic[T]):
     value: Any
     
     @property
-    def keytype(self) -> Type[object]:
+    def valuetype(self) -> Type[Any]:
         attrs = self.type.__annotations__
         return attrs[self.key] # type: ignore[no-any-return]
