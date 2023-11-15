@@ -3,7 +3,7 @@ from __future__ import annotations
 from dataclasses import is_dataclass
 from pathlib import Path
 from typing import Any, Type, TypeVar
-from configurationclass.configwriter import JSONConfigParser
+from configurationclass.configparse.json_parser import JSONConfigParser
 
 from .filler.nested_obj_filler import DataclassFiller
 from .filler.flat_object_filler import ObjectFiller
