@@ -21,4 +21,5 @@ class JSONWriter(ConfigWriter):
     def read_into(self, jsonpath: Path, type: Type[T]) -> T: 
         with open(jsonpath) as jsonfile:
             parsed_json = json.load(jsonfile)
+            
             return ObjectFiller(type).fill(parsed_json)
