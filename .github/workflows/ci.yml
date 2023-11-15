@@ -18,6 +18,6 @@ jobs:
         run:
           make env
       - name: Test
-        run: pytest
+        run: pytest --cov
       - name: TypeCheck
         run: mypy . 
