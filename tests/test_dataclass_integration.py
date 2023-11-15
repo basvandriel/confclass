@@ -15,7 +15,7 @@ def test_notnone(testdir: Path):
     assert result is not None
     assert result.age == 29
     
-def test_loaddict(testdir: Path):
+def test_loaddict():
     @dataclass
     class User:
         name: str
