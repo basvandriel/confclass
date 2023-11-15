@@ -13,11 +13,10 @@ def test_env_filler():
         name: str
         age: int
     
-    
-    filler = EnvObjectFiller(User)
-    x = filler.fill({
+    result = EnvObjectFiller(User).fill({
         'name': 'Bas',
         'age': '200'
     })
     
-    print(1)
+    assert result is not None
+    assert result.age == 200
