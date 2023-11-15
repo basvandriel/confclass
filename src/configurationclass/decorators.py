@@ -2,29 +2,18 @@ from __future__ import annotations
 
 from pathlib import Path
 from typing import Type, TypeVar
-from configurationclass.configwriter import ConfigWriter, JSONWriter
+from configurationclass.configwriter import JSONConfigParser
+from os import path
 
-from configurationclass.main import is_confclass
-
-file_extension_mapper = {
-    '.json': JSONWriter()
-}
+from . import load_dict_in_confclass
 
 T = TypeVar('T', bound=object)
 
 def parse_config(filepath: Path, type: Type[T]) -> T | None:
-    from os import path
-    
     if not path.exists(filepath):
         raise FileNotFoundError
     
-    if not is_confclass(type):
-        raise Exception(f"'{type.__name__}' should be a confclass instance") 
+    # only JSON support currently
+    attrs = JSONConfigParser().read(filepath)
     
-    # Find the correct writer
-    writer: ConfigWriter | None = file_extension_mapper.get(filepath.suffix)
-    
-    if writer is None:
-        raise Exception(f"No writer found for the '{filepath.suffix}' format")
-    
-    return writer.read_into(filepath, type)
+    return load_dict_in_confclass(attrs, type)
