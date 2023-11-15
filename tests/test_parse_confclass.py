@@ -2,7 +2,7 @@ from pathlib import Path
 from configurationclass import confclass
 from pytest import raises
 
-from configurationclass.decorators import parse_config
+from configurationclass import parse_config
 
 @confclass
 class Person:
