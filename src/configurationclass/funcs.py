@@ -44,3 +44,10 @@ def parse_config(filepath: Path, type: Type[T]) -> T | None:
     attrs = JSONConfigParser().read(filepath)
     
     return dict_in_confclass(attrs, type)
+
+def parse_env(filepath: Path, type: Type[T]) -> T | None:
+    if not path.exists(filepath):
+        raise FileNotFoundError
+    
+    return None
+    
