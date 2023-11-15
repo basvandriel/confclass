@@ -4,12 +4,22 @@ import abc
 import json
 
 from pathlib import Path
-from typing import Type, TypeVar
+from typing import Any, Type, TypeVar
 
 from .flat_object_filler import ObjectFiller
 
 T = TypeVar('T', bound=object)
 
+
+class ConfigParser(abc.ABC):
+    @abc.abstractmethod
+    def read(self, path: Path) -> dict[str, Any]:
+        ...
+
+class JSONConfigParser(ConfigParser):
+    def read(self, path: Path) -> dict[str, Any]:
+        with open(path) as jsonfile:
+            return json.load(jsonfile) # type: ignore
 
 class ConfigWriter(abc.ABC):
     @abc.abstractmethod
@@ -19,7 +29,5 @@ class ConfigWriter(abc.ABC):
 
 class JSONWriter(ConfigWriter):
     def read_into(self, jsonpath: Path, type: Type[T]) -> T: 
-        with open(jsonpath) as jsonfile:
-            parsed_json = json.load(jsonfile)
-            
-            return ObjectFiller(type).fill(parsed_json)
+        json = JSONConfigParser().read(jsonpath)
+        return ObjectFiller(type).fill(json)

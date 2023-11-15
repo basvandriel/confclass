@@ -2,6 +2,7 @@ from dataclasses import is_dataclass
 from inspect import isclass
 from pathlib import Path
 from typing import Type, TypeVar
+from configurationclass.configwriter import JSONConfigParser
 
 from configurationclass.nested_obj_filler import DataclassFiller
 
@@ -29,12 +30,7 @@ def parse_dataclass(filepath: Path, type: Type[T]) -> T | None:
     if not is_dataclass(type):
         raise Exception(f"'{type.__name__}' should be a dataclass instance") 
     
-    # only JSON support
-    import json
-    
-    file = open(filepath, 'r')
-    attrs =  json.load(file)
-    
-    result = DataclassFiller(type).fill(attrs)
-    
-    return result # type: ignore
+    # only JSON support currently
+    attrs = JSONConfigParser().read(filepath)
+
+    return DataclassFiller(type).fill(attrs) # type: ignore
