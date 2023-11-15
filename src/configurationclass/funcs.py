@@ -4,10 +4,12 @@ from dataclasses import is_dataclass
 from pathlib import Path
 from typing import Any, Type, TypeVar
 from configurationclass.configwriter import JSONConfigParser
-from configurationclass.flat_object_filler import ObjectFiller
+
 from configurationclass.main import is_confclass
 
-from configurationclass.nested_obj_filler import DataclassFiller
+from .filler.nested_obj_filler import DataclassFiller
+from .filler.flat_object_filler import ObjectFiller
+
 from os import path
 
 

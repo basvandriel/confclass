@@ -2,9 +2,8 @@ from __future__ import annotations
 
 from typing import Any, Type, TypeVar
 
-from configurationclass.flat_object_filler import ObjectFiller
+from .flat_object_filler import ObjectFiller
 from configurationclass.row import Row
-# from configurationclass.flat_object_filler import ObjectFiller, Row
 
 
 T = TypeVar('T', bound=object)
