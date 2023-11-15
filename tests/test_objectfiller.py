@@ -3,8 +3,8 @@
 
 from typing import Any
 from pytest import raises
-from configurationclass.nested_obj_filler import ObjectFiller
 
+from configurationclass.filler.nested_obj_filler import ObjectFiller
 
 class TestingPayload:
     user: str

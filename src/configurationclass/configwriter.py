@@ -6,7 +6,7 @@ import json
 from pathlib import Path
 from typing import Any, Type, TypeVar
 
-from .flat_object_filler import ObjectFiller
+from .filler.flat_object_filler import ObjectFiller
 
 T = TypeVar('T', bound=object)
 

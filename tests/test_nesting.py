@@ -1,5 +1,5 @@
 from pytest import raises
-from configurationclass.nested_obj_filler import ObjectFiller
+from configurationclass.filler.nested_obj_filler import ObjectFiller
     
 def test_1level_basic_nest():
     class Adress:

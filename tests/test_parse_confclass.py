@@ -1,5 +1,5 @@
 from pathlib import Path
-from configurationclass import confclass
+from configurationclass.decorators import confclass
 from pytest import raises
 
 from configurationclass import parse_config
