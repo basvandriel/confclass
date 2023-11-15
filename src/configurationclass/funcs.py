@@ -5,8 +5,6 @@ from pathlib import Path
 from typing import Any, Type, TypeVar
 from configurationclass.configwriter import JSONConfigParser
 
-from configurationclass.main import is_confclass
-
 from .filler.nested_obj_filler import DataclassFiller
 from .filler.flat_object_filler import ObjectFiller
 
@@ -15,6 +13,9 @@ from os import path
 
 T = TypeVar('T', bound=object)
 
+def is_confclass(obj: object) -> bool:
+    return hasattr(obj, '__IS_CONCLASS__')
+    
 
 def dict_in_dataclass(data: dict[str, Any], type: Type[T]) -> T | None:
     if not is_dataclass(type):
