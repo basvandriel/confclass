@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from configurationclass import parse_dataclass, load_dict_in_dataclass
+from configurationclass import parse_dataclass, dict_in_dataclass
 from pathlib import Path
 
 def test_notnone(testdir: Path):
@@ -21,7 +21,7 @@ def test_loaddict():
         name: str
         age: int
         
-    result = load_dict_in_dataclass({
+    result = dict_in_dataclass({
         'name': 'bas',
         'age': 29
     }, User)

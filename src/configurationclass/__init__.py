@@ -26,15 +26,12 @@ def confclass(cls: T) -> T:
 
     return wrap(cls) # type: ignore
 
-
-# name idea: dataclass_from_dict
-# name idea: dict_to_dataclass
-def load_dict_in_dataclass(data: dict[str, Any], type: Type[T]) -> T | None:
+def dict_in_dataclass(data: dict[str, Any], type: Type[T]) -> T | None:
     if not is_dataclass(type):
         raise SyntaxError(f"'{type.__name__}' should be a dataclass instance")
     return DataclassFiller(type).fill(data) # type: ignore[return-value]
 
-def load_dict_in_confclass(data: dict[str, Any], type: Type[T]) -> T | None:
+def dict_in_confclass(data: dict[str, Any], type: Type[T]) -> T | None:
     if not is_confclass(type):
         raise SyntaxError(f"'{type.__name__}' should be a confclass instance") 
     return ObjectFiller(type).fill(data)
@@ -46,7 +43,7 @@ def parse_dataclass(filepath: Path, type: Type[T]) -> T | None:
     # only JSON support currently
     attrs = JSONConfigParser().read(filepath)
     
-    return load_dict_in_dataclass(attrs, type)
+    return dict_in_dataclass(attrs, type)
 
 def parse_config(filepath: Path, type: Type[T]) -> T | None:
     if not path.exists(filepath):
@@ -55,4 +52,4 @@ def parse_config(filepath: Path, type: Type[T]) -> T | None:
     # only JSON support currently
     attrs = JSONConfigParser().read(filepath)
     
-    return load_dict_in_confclass(attrs, type)
+    return dict_in_confclass(attrs, type)
