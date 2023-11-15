@@ -7,7 +7,6 @@ def test_env_parse_ok(testdir: Path):
     result = EnvFileParser().read(testdir / 'test.env')
     assert result == {'USER': 'bas', 'AGE': '29'}
 
-# EnvObjectFiller
 def test_env_filler():
     class User:
         name: str
