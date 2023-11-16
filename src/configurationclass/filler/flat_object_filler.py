@@ -10,6 +10,7 @@ T = TypeVar('T', bound=object)
 class FlatObjectfiller(Generic[T]):
     _class: Type[T]
     _overwrite_defaults: bool
+
     
     def __init__(self, type: Type[T], overwrite_defaults: bool = True) -> None:
         self._class = type   
@@ -47,8 +48,7 @@ class FlatObjectfiller(Generic[T]):
             data, self._class
         )
         return self._resolve_obj(self._class, data)
-    ...
-
+    
 class ObjectFiller(FlatObjectfiller[T]):
     def _validate_class_annotations(self, row: Row[T]) -> None:        
         if row.key not in row.type.__annotations__:
@@ -83,7 +83,6 @@ class ObjectFiller(FlatObjectfiller[T]):
             if not self._should_set_attr(cls, k):
                 continue
                         
-            
             setattr(obj, k, self._resolve_value(row))
             
         return obj

@@ -1,6 +1,6 @@
 from pathlib import Path
 from configurationclass.configparse.env_parser import EnvFileParser
-from configurationclass.filler.env_filler import EnvObjectFiller
+from configurationclass.filler.env_filler import CastingObjectFiller
 
 
 def test_env_parse_ok(testdir: Path):
@@ -12,7 +12,7 @@ def test_env_filler():
         name: str
         age: int
     
-    result = EnvObjectFiller(User).fill({
+    result = CastingObjectFiller(User).fill({
         'name': 'Bas',
         'age': '200'
     })
